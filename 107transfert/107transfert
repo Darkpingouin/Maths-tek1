@@ -1,0 +1,109 @@
+
+#!/usr/bin/python
+
+from pylab import *
+import time
+import string
+from re import *
+import sys
+import matplotlib.pyplot as plt
+import numpy as np
+
+xlim(-10, 10)
+ylim(-30, 30)
+
+def naive(string, x):
+	n = len(string) - 1
+	total = 0
+	while n > 0:
+		total = float(string[n]) * (x ** (n - 1))
+		n = n - 1
+	return total
+
+def horner(string, x):
+	n = len(string) - 1
+	total = 0
+	while n > 0:
+		total = float(string[n]) * (x ** (n -1))
+		n = n - 1
+
+def poly(string):
+	n = len(string) - 1
+	i = 0.0
+	while n >= 1:
+		if string[i] != '0' and string[i] != '1':
+			print (string[i] + " x^" + str(n)),
+		elif string[i] == '1':
+			print ("x^" + str(n)),
+		if int(string[i + 1]) > 0:
+	 		print ("+"),
+		n = n - 1
+		i = i + 1
+	if string[i] != '0':
+		print (string[i]),
+
+def args(n):
+	string = sys.argv[n]
+	string = findall(r'[-+]?\d+', string)
+	return (string)
+
+def graph(string1, string2):
+	print ("graph")	
+
+def option1(string):
+	print ("evaluation du polynome "),
+	poly(string)
+	print(" en 1 000 000 points:")
+	x = 0.0
+	while  x <= 1000:
+		naive(string, x)
+		x = x + 0.001
+
+	print("algorithme horner:\t" + str(time.clock()) + "sec") 
+	x = 0.0
+	while  x <= 1000:
+		horner(string, x)
+		x = x + 0.001
+	print("algorithme naif:\t" + str(time.clock()) + "sec")
+
+def option2(string):
+	n = len(string) - 1
+	comp = n / 2
+	c = 1
+	cpt = 1
+	while comp > 0:
+		comp = comp - 1
+		d = args(c)
+		print("\t\t"),
+		(poly(d))
+		print(" ")
+		print ("composant" + str(cpt) + ": ------------------")
+		c = c + 1
+		d = args(c)
+		print("\t\t"), 
+		(poly(d))
+		print(" ")
+ 		c = c + 1
+		cpt = cpt + 1
+	c = 1
+	y = []
+	i = -10
+	for i in range(10, 1):
+		x = list.append(i)
+	a = naive(args(c) , x)
+	b = naive(args(c+1), x)
+	y = list.append(a/b)
+	plt.plot(x, (y), 'o')
+	plt.legend("composant1")
+	plt.show()
+
+if (len(sys.argv) == 2):
+	print("option 1")
+	option1(args(1))
+
+elif (len(sys.argv) >= 2 and len(sys.argv) % 2 != 0):
+	print("option 2")
+	option2(sys.argv)
+
+else:
+	print("\033[31merror: at least 1 argument expected for option 1 and at least 2 for option 2\033[0m")
